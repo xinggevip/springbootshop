@@ -1,4 +1,4 @@
-package com.qiangssvip.mapper;
+package com.qiangssvip.dao;
 
 import com.qiangssvip.pojo.Category;
 import org.apache.ibatis.annotations.Param;
@@ -10,4 +10,5 @@ public interface CategoryMapper {
     @Select("select * from mall_category where id = #{id}")
     Category findById(@Param("id") Integer id);
 
+    Category queryById(@Param("id") Integer id);
 }

@@ -5,7 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@MapperScan(basePackages = "com.qiangssvip.mapper")
+@MapperScan(basePackages = "com.qiangssvip.dao")
 public class ShopApplication {
 
     public static void main(String[] args) {

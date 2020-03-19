@@ -1,25 +1,22 @@
-package com.qiangssvip;
+package com.qiangssvip.dao;
 
-import com.qiangssvip.dao.CategoryMapper;
 import com.qiangssvip.pojo.Category;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ShopApplicationTests {
+class CategoryMapperTest {
 
     @Autowired
     private CategoryMapper categoryMapper;
 
     @Test
-    void contextLoads() {
-        Category category = categoryMapper.findById(100001);
-        System.out.println(category);
+    void findById() {
     }
 
     @Test
-    public void queryByIdTest(){
+    void queryById() {
         Category category = categoryMapper.queryById(100002);
         System.out.println(category);
     }
