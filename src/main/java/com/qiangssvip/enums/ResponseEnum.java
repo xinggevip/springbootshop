@@ -16,6 +16,10 @@ public enum ResponseEnum {
 
     REGISTER_FAILED(5,"注册失败"),
 
+    LOGIN_ERROR(6,"用户名或密码错误"),
+
+    USER_NOFIND(7, "用户未注册"),
+
     NEED_LOGIN(10,"用户未登录，请先登录"),
 
     PARAMTER_ERROR(3,"参数错误");

@@ -12,5 +12,6 @@ public interface IUservice {
     /**
      * 登录
      */
+    ResponseVo login(String username, String password);
 
 }

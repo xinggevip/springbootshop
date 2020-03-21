@@ -1,6 +1,9 @@
 package com.qiangssvip.controller;
 
+import com.qiangssvip.consts.MallConst;
+import com.qiangssvip.enums.ResponseEnum;
 import com.qiangssvip.form.UserForm;
+import com.qiangssvip.form.UserLoginForm;
 import com.qiangssvip.pojo.User;
 import com.qiangssvip.service.IUservice;
 import com.qiangssvip.service.vo.ResponseVo;
@@ -9,10 +12,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -26,7 +28,7 @@ public class UserController {
     @Autowired
     private IUservice iUservice;
 
-    @RequestMapping("/register")
+    @PostMapping("/register")
     public ResponseVo register(@Valid @RequestBody UserForm userForm,
                                BindingResult bindingResult){
 
@@ -51,5 +53,42 @@ public class UserController {
 //        return ResponseVo.error(ResponseEnum.NEED_LOGIN);
         return iUservice.register(user);
     }
+
+    @PostMapping("/login")
+    public ResponseVo login(@Valid @RequestBody UserLoginForm user,
+                            BindingResult bindingResult,
+                            HttpSession session) {
+
+        if (bindingResult.hasErrors()){
+            String msg = "";
+            List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+            for (FieldError fieldError : fieldErrors) {
+                msg += fieldError.getField() + " " + fieldError.getDefaultMessage();
+                log.error(fieldError.getField() + " " + fieldError.getDefaultMessage());
+            }
+
+            return ResponseVo.error(PASSWORD_ERROR,msg);
+
+        }
+
+        ResponseVo<User> login = iUservice.login(user.getUsername(), user.getPassword());
+
+        session.setAttribute(MallConst.CURRENT_USER,login.getData());
+        log.info("/login ssionId = {}",session.getId());
+
+        return login;
+    }
+
+    @GetMapping("/getUser")
+    public ResponseVo<User> userInfo(HttpSession session) {
+        log.info("/getUser ssionId = {}",session.getId());
+        User user = (User) session.getAttribute(MallConst.CURRENT_USER);
+        if (user == null) {
+            return ResponseVo.error(ResponseEnum.NEED_LOGIN);
+        }
+
+        return ResponseVo.successs(user);
+    }
+
 
 }

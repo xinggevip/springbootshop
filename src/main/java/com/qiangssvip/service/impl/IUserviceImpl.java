@@ -26,7 +26,7 @@ public class IUserviceImpl implements IUservice {
      */
     @Override
     public ResponseVo register(User user) {
-        err();
+//        err();
         int countByUsername = userMapper.countByUsername(user.getUsername());
         int countByEmail = userMapper.countByEmail(user.getEmail());
 
@@ -57,6 +57,19 @@ public class IUserviceImpl implements IUservice {
 
         return ResponseVo.success();
 
+    }
+
+    @Override
+    public ResponseVo login(String username, String password) {
+        User user = userMapper.selectByUsername(username);
+        if (user != null) {
+            String digestPassword = DigestUtils.md5DigestAsHex(password.getBytes(StandardCharsets.UTF_8));
+            if (user.getPassword().equals(digestPassword)) {
+                return ResponseVo.successs(user);
+            }
+            return ResponseVo.error(LOGIN_ERROR);
+        }
+        return ResponseVo.error(USER_NOFIND);
     }
 
     public void err(){

@@ -164,5 +164,11 @@
     from mall_user
     where email = #{email}
   </select>
+  <select id="selectByUsername" parameterType="java.lang.String" resultType="com.qiangssvip.pojo.User">
+    select
+    <include refid="Base_Column_List" />
+    from mall_user
+    where username = #{username}
+  </select>
 
 </mapper>
