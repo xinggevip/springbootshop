@@ -6,7 +6,7 @@ import lombok.Getter;
 public enum ResponseEnum {
     ERROR(-1,"服务器错误"),
 
-    SUCCESS(0,"成功"),
+    SUCCESS(0,"登录成功"),
 
     PASSWORD_ERROR(1,"密码错误"),
 

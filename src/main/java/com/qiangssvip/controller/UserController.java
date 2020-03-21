@@ -1,7 +1,6 @@
 package com.qiangssvip.controller;
 
 import com.qiangssvip.consts.MallConst;
-import com.qiangssvip.enums.ResponseEnum;
 import com.qiangssvip.form.UserForm;
 import com.qiangssvip.form.UserLoginForm;
 import com.qiangssvip.pojo.User;
@@ -83,12 +82,21 @@ public class UserController {
     public ResponseVo<User> userInfo(HttpSession session) {
         log.info("/getUser ssionId = {}",session.getId());
         User user = (User) session.getAttribute(MallConst.CURRENT_USER);
-        if (user == null) {
-            return ResponseVo.error(ResponseEnum.NEED_LOGIN);
-        }
 
         return ResponseVo.successs(user);
     }
+
+    // TODO 判断登录状态，拦截器
+    @PostMapping("/loginOut")
+    public ResponseVo loginOut(HttpSession session){
+
+        log.info("/loginOut ssionId = {}",session.getId());
+        // 删除session
+        session.removeAttribute(MallConst.CURRENT_USER);
+        return ResponseVo.success();
+    }
+
+
 
 
 }

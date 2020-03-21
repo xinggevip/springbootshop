@@ -1,6 +1,7 @@
-package com.qiangssvip.exception;
+package com.qiangssvip.exceptionhandle;
 
 import com.qiangssvip.enums.ResponseEnum;
+import com.qiangssvip.exception.UserLoginException;
 import com.qiangssvip.service.vo.ResponseVo;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -16,5 +17,11 @@ public class RuntimeExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)  // 自定义异常状态码
     public ResponseVo handle(RuntimeException e){
         return ResponseVo.error(ResponseEnum.ERROR,e.getMessage());
+    }
+
+    @ExceptionHandler(UserLoginException.class)
+    @ResponseBody
+    public ResponseVo userLoginExceptionHandle(RuntimeException e){
+        return ResponseVo.error(ResponseEnum.NEED_LOGIN);
     }
 }
