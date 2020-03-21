@@ -26,6 +26,7 @@ public class IUserviceImpl implements IUservice {
      */
     @Override
     public ResponseVo register(User user) {
+        err();
         int countByUsername = userMapper.countByUsername(user.getUsername());
         int countByEmail = userMapper.countByEmail(user.getEmail());
 
@@ -56,6 +57,10 @@ public class IUserviceImpl implements IUservice {
 
         return ResponseVo.success();
 
+    }
+
+    public void err(){
+        throw new RuntimeException("未知的错误");
     }
 
 }
