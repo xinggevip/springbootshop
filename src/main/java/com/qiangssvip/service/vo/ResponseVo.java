@@ -5,6 +5,10 @@ import com.qiangssvip.enums.ResponseEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -43,5 +47,17 @@ public class ResponseVo<T> {
 
     public static <T> ResponseVo<T> error(ResponseEnum responseEnum,String msg){
         return new ResponseVo<>(responseEnum.getCode(),msg);
+    }
+
+    public static <T> ResponseVo<T> error(ResponseEnum responseEnum, BindingResult bindingResult) {
+
+        String msg = "";
+        List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+        for (FieldError fieldError : fieldErrors) {
+            msg += fieldError.getField() + " " + fieldError.getDefaultMessage();
+        }
+
+        return ResponseVo.error(responseEnum, msg);
+
     }
 }
