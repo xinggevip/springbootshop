@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,6 +38,7 @@ public class ICategoryImpl implements ICategory {
                 .map(this::category2CategoryVo)         // 遍历数据
 //                .map(e -> category2CategoryVo(e))     // 和上一句效果一致，idea推荐使用上面的写法
                 .collect(Collectors.toList());
+        findSubCategory(collect,categories);
 
         return ResponseVo.successs(collect);
     }
@@ -45,6 +47,20 @@ public class ICategoryImpl implements ICategory {
         CategoryVo categoryVo = new CategoryVo();
         BeanUtils.copyProperties(category,categoryVo);
         return categoryVo;
+    }
+
+    private void findSubCategory(List<CategoryVo> categoryVoList,List<Category> categories) {
+        for (CategoryVo categoryVo : categoryVoList) {
+            ArrayList<CategoryVo> subCategoryVoList = new ArrayList<>();
+            for (Category category : categories) {
+                if (category.getParentId().equals(categoryVo.getId())) {
+                    CategoryVo subCategoryVo = category2CategoryVo(category);
+                    subCategoryVoList.add(subCategoryVo);
+                }
+            }
+            categoryVo.setSubCategories(subCategoryVoList);
+            findSubCategory(subCategoryVoList,categories);
+        }
     }
 
 
