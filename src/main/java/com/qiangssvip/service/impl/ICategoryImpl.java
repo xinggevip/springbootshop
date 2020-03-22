@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,6 +42,22 @@ public class ICategoryImpl implements ICategory {
         findSubCategory(collect,categories);
 
         return ResponseVo.successs(collect);
+    }
+
+    @Override
+    public void findSubCategoryId(Integer id, Set<Integer> resultSet) {
+        List<Category> categories = categoryMapper.selectAll();
+        findSubCategoryId(id, resultSet, categories);
+
+    }
+
+    private void findSubCategoryId(Integer id, Set<Integer> resultSet,List<Category> categories) {
+        for (Category category : categories) {
+            if (category.getParentId().equals(id)) {
+                resultSet.add(category.getId());
+                findSubCategoryId(category.getId(),resultSet,categories);
+            }
+        }
     }
 
     private CategoryVo category2CategoryVo(Category category) {
