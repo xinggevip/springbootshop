@@ -1,10 +1,8 @@
 package com.qiangssvip.service;
 
-import com.qiangssvip.service.vo.ProductVo;
+import com.github.pagehelper.PageInfo;
 import com.qiangssvip.service.vo.ResponseVo;
 
-import java.util.List;
-
 public interface IProductService {
-    ResponseVo<List<ProductVo>> list(Integer categoryId,Integer pageNum,Integer pageSize);
+    ResponseVo<PageInfo> list(Integer categoryId, Integer pageNum, Integer pageSize);
 }

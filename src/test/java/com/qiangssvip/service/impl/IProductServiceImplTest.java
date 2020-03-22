@@ -1,12 +1,12 @@
 package com.qiangssvip.service.impl;
 
+import com.github.pagehelper.PageInfo;
 import com.qiangssvip.service.IProductService;
+import com.qiangssvip.service.vo.ResponseVo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -17,6 +17,9 @@ class IProductServiceImplTest {
 
     @Test
     void list() {
-        iProductService.list(100001,1,10);
+        ResponseVo<PageInfo> list = iProductService.list(null, 1, 10);
+        PageInfo data = list.getData();
+        System.out.println(data);
+
     }
 }
