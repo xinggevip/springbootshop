@@ -22,7 +22,9 @@ public enum ResponseEnum {
 
     NEED_LOGIN(10,"用户未登录，请先登录"),
 
-    PARAMTER_ERROR(3,"参数错误");
+    PARAMTER_ERROR(3,"参数错误"),
+
+    PRODUCT_OFF_SALE_OR_DELETE(12,"商品下架或删除"),
 
     ;
 
