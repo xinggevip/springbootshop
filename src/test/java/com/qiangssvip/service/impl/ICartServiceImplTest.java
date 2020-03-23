@@ -35,8 +35,8 @@ class ICartServiceImplTest {
 
     @Test
     void update() {
-        CartUpdateForm form = new CartUpdateForm(10,false);
-        ResponseVo<CartVo> responseVo = iCartService.update(1, 26, form);
+        CartUpdateForm form = new CartUpdateForm(2,false);
+        ResponseVo<CartVo> responseVo = iCartService.update(1, 27, form);
         log.info("list = {}",gson.toJson(responseVo));
 
     }
@@ -47,4 +47,22 @@ class ICartServiceImplTest {
         log.info("list = {}",gson.toJson(responseVo));
 
     }
+
+    @Test
+    void selectAll(){
+        ResponseVo<CartVo> responseVo = iCartService.selectAll(1);
+        log.info("list = {}",gson.toJson(responseVo));
+    };
+
+    @Test
+    void unSelectAll(){
+        ResponseVo<CartVo> responseVo = iCartService.unSelectAll(1);
+        log.info("list = {}",gson.toJson(responseVo));
+    };
+
+    @Test
+    void sum(){
+        ResponseVo<Integer> responseVo = iCartService.sum(1);
+        log.info("list = {}",gson.toJson(responseVo));
+    };
 }
