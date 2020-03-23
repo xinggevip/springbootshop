@@ -5,6 +5,7 @@ import com.qiangssvip.dao.ProductMapper;
 import com.qiangssvip.enums.ProductStatusEnum;
 import com.qiangssvip.enums.ResponseEnum;
 import com.qiangssvip.form.CartAddForm;
+import com.qiangssvip.form.CartUpdateForm;
 import com.qiangssvip.pojo.Cart;
 import com.qiangssvip.pojo.Product;
 import com.qiangssvip.service.ICartService;
@@ -139,5 +140,45 @@ public class ICartServiceImpl implements ICartService {
         cartVo.setCartTotalPrice(cartTotalPrice);
         cartVo.setCartProductVoList(cartProductVoArrayList);
         return ResponseVo.successs(cartVo);
+    }
+
+    @Override
+    public ResponseVo<CartVo> update(Integer uid, Integer productId, CartUpdateForm form) {
+        HashOperations<String, String, String> opsForHash = redisTemplate.opsForHash();
+        String redisKey = String.format(CART_REDIS_KEY_TEMPLATE, uid); // redisKey
+        Cart cart;
+        String value = opsForHash.get(redisKey, String.valueOf(productId)); // 根据redisKey和productId取 商品对象（已经序列化字符串了）
+        if (StringUtils.isEmpty(value)) {
+            // 没有商品 报错
+            return ResponseVo.error(ResponseEnum.CART_PRODUCT_NOT_EXIST);
+        } else {
+            cart = gson.fromJson(value, Cart.class);
+            if (form.getQuantity() != null
+                && form.getQuantity() >= 0) {
+                cart.setQuantity(form.getQuantity());
+            }
+            if (form.getSelected() != null) {
+                cart.setProductSelected(form.getSelected());
+            }
+            opsForHash.put(redisKey,String.valueOf(productId),gson.toJson(cart));
+        }
+
+        return list(uid);
+    }
+
+    @Override
+    public ResponseVo<CartVo> delete(Integer uid,Integer productId) {
+        HashOperations<String, String, String> opsForHash = redisTemplate.opsForHash();
+        String redisKey = String.format(CART_REDIS_KEY_TEMPLATE, uid); // redisKey
+        Cart cart;
+        String value = opsForHash.get(redisKey, String.valueOf(productId)); // 根据redisKey和productId取 商品对象（已经序列化字符串了）
+        if (StringUtils.isEmpty(value)) {
+            // 没有商品 报错
+            return ResponseVo.error(ResponseEnum.CART_PRODUCT_NOT_EXIST);
+        }
+
+        opsForHash.delete(redisKey, String.valueOf(productId));
+
+        return list(uid);
     }
 }

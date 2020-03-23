@@ -3,6 +3,7 @@ package com.qiangssvip.service.impl;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.qiangssvip.form.CartAddForm;
+import com.qiangssvip.form.CartUpdateForm;
 import com.qiangssvip.service.ICartService;
 import com.qiangssvip.service.vo.CartVo;
 import com.qiangssvip.service.vo.ResponseVo;
@@ -30,5 +31,20 @@ class ICartServiceImplTest {
     void list() {
         ResponseVo<CartVo> list = iCartService.list(1);
         log.info("cartVo = {}",gson.toJson(list.getData()));
+    }
+
+    @Test
+    void update() {
+        CartUpdateForm form = new CartUpdateForm(10,false);
+        ResponseVo<CartVo> responseVo = iCartService.update(1, 26, form);
+        log.info("list = {}",gson.toJson(responseVo));
+
+    }
+
+    @Test
+    void delete() {
+        ResponseVo<CartVo> responseVo = iCartService.delete(1, 26);
+        log.info("list = {}",gson.toJson(responseVo));
+
     }
 }
