@@ -1,6 +1,8 @@
 package com.qiangssvip.form;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -11,6 +13,8 @@ import javax.validation.constraints.NotNull;
 
 @Data
 @Valid
+@AllArgsConstructor
+@NoArgsConstructor
 public class CartAddForm {
 
     @NotNull(message = "不能为空")
