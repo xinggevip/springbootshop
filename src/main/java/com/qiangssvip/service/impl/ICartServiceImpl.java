@@ -8,6 +8,7 @@ import com.qiangssvip.form.CartAddForm;
 import com.qiangssvip.pojo.Cart;
 import com.qiangssvip.pojo.Product;
 import com.qiangssvip.service.ICartService;
+import com.qiangssvip.service.vo.CartProductVo;
 import com.qiangssvip.service.vo.CartVo;
 import com.qiangssvip.service.vo.ResponseVo;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,10 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -70,7 +75,7 @@ public class ICartServiceImpl implements ICartService {
          * 如果没有 则加购
          * 如果有   则商品数量 + 1
          */
-        Cart cart = new Cart();
+        Cart cart;
 
         HashOperations<String, String, String> opsForHash = redisTemplate.opsForHash();
         String redisKey = String.format(CART_REDIS_KEY_TEMPLATE, uid); // redisKey
@@ -83,6 +88,56 @@ public class ICartServiceImpl implements ICartService {
         }
         opsForHash.put(redisKey,String.valueOf(product.getId()),gson.toJson(cart));
 
-        return null;
+        ResponseVo<CartVo> list = list(uid);
+        return list;
+    }
+
+    @Override
+    public ResponseVo<CartVo> list(Integer uid) {
+
+        HashOperations<String, String, String> opsForHash = redisTemplate.opsForHash();
+        String redisKey = String.format(CART_REDIS_KEY_TEMPLATE, uid); // redisKey
+        Boolean selectAll = true;
+        Integer cartTotalQuantity = 0;
+        BigDecimal cartTotalPrice = BigDecimal.ZERO;
+
+        Map<String, String> entries = opsForHash.entries(redisKey);
+        ArrayList<CartProductVo> cartProductVoArrayList = new ArrayList<>();
+        CartVo cartVo = new CartVo();
+        for (Map.Entry<String,String> entry : entries.entrySet()) {
+            Integer productId = Integer.valueOf(entry.getKey());
+            Cart cart = gson.fromJson(entry.getValue(), Cart.class);
+
+            Product product = productMapper.selectByPrimaryKey(productId);
+            if (product != null) {
+                CartProductVo cartProductVo = new CartProductVo(
+                        productId,
+                        cart.getQuantity(),
+                        product.getName(),
+                        product.getSubtitle(),
+                        product.getMainImage(),
+                        product.getPrice(),
+                        product.getStatus(),
+                        product.getPrice().multiply(BigDecimal.valueOf(cart.getQuantity())),
+                        product.getStock(),
+                        cart.getProductSelected()
+                );
+                cartProductVoArrayList.add(cartProductVo);
+                if (!cart.getProductSelected()) {
+                    selectAll = false;
+                }
+                if (cart.getProductSelected()) {
+                    cartTotalPrice = cartTotalPrice.add(cartProductVo.getProductTotalPrice());
+                }
+
+            }
+
+            cartTotalQuantity += cart.getQuantity();
+        }
+        cartVo.setSelectedAll(selectAll);
+        cartVo.setCartTotalQuantity(cartTotalQuantity);
+        cartVo.setCartTotalPrice(cartTotalPrice);
+        cartVo.setCartProductVoList(cartProductVoArrayList);
+        return ResponseVo.successs(cartVo);
     }
 }
