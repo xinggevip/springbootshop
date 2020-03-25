@@ -37,6 +37,19 @@
       </foreach>
     </if>
   </select>
+  <select id="selectByProductIdSet" resultType="com.qiangssvip.pojo.Product">
+    select
+    <include refid="Base_Column_List" />
+    from mall_product
+    <where>
+      <if test="productIds.size() > 0">
+        id in
+        <foreach collection="productIds" item="item" index="index" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </where>
+  </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from mall_product
     where id = #{id,jdbcType=INTEGER}

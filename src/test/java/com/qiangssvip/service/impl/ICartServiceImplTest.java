@@ -23,8 +23,12 @@ class ICartServiceImplTest {
 
     @Test
     void add() {
-        ResponseVo<CartVo> responseVo = iCartService.add(1, new CartAddForm(29, true));
-        log.info("cartVo = {}",gson.toJson(responseVo.getData()));
+        Integer n = 26;
+        for (int i = 0; i < 2; i++) {
+            ResponseVo<CartVo> responseVo = iCartService.add(12, new CartAddForm(n + i, true));
+            log.info("cartVo = {}",gson.toJson(responseVo.getData()));
+        }
+
     }
 
     @Test

@@ -2,8 +2,11 @@ package com.qiangssvip.service;
 
 import com.qiangssvip.form.CartAddForm;
 import com.qiangssvip.form.CartUpdateForm;
+import com.qiangssvip.pojo.Cart;
 import com.qiangssvip.service.vo.CartVo;
 import com.qiangssvip.service.vo.ResponseVo;
+
+import java.util.List;
 
 public interface ICartService {
 
@@ -20,6 +23,8 @@ public interface ICartService {
     ResponseVo<CartVo> unSelectAll(Integer uid);
 
     ResponseVo<Integer> sum(Integer uid);
+
+    List<Cart> listForCart(Integer uid);
 
 
 }

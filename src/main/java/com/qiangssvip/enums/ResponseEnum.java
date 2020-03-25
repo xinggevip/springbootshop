@@ -34,7 +34,12 @@ public enum ResponseEnum {
 
     DELETE_SHIPPING_FAIL(16,"删除商品失败"),
 
-    UPDATE_SHIPPING_FAILL(17,"更新商品失败"),
+    UPDATE_SHIPPING_FAIL(99,"更新商品失败"),
+
+    SHIPPING_NOT_EXIST(17,"地址不存在"),
+
+    CART__SELECTED_IS_EMPTY(18,"请选择商品后下单"),
+
 
     ;
 
