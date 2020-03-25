@@ -6,7 +6,7 @@ import lombok.Getter;
 public enum ResponseEnum {
     ERROR(-1,"服务器错误"),
 
-    SUCCESS(0,"登录成功"),
+    SUCCESS(0,"成功"),
 
     PASSWORD_ERROR(1,"密码错误"),
 
@@ -31,6 +31,10 @@ public enum ResponseEnum {
     PRODUCT_STOCK_ERROR(14,"库存不足"),
 
     CART_PRODUCT_NOT_EXIST(15,"购物车里无此商品"),
+
+    DELETE_SHIPPING_FAIL(16,"删除商品失败"),
+
+    UPDATE_SHIPPING_FAILL(17,"更新商品失败"),
 
     ;
 
