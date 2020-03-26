@@ -38,4 +38,11 @@ class IOrderServiceImplTest {
         ResponseVo<OrderVo> responseVo = orderService.detail(12, no);
         log.info("detail = {}",gson.toJson(responseVo));
     }
+
+    @Test
+    void cancel() {
+        Long no = 1585191616943L;
+        ResponseVo responseVo = orderService.cancel(12, no);
+        log.info("detail = {}",gson.toJson(responseVo));
+    }
 }
