@@ -38,6 +38,19 @@
       where user_id = #{uid,jdbcType=INTEGER}
       and id = #{shippingId,jdbcType=INTEGER}
     </select>
+  <select id="selectByIdSet" resultType="com.qiangssvip.pojo.Shipping">
+    select
+    <include refid="Base_Column_List" />
+    from mall_shipping
+    <where>
+      <if test="idSet.size() > 0">
+        id in
+        <foreach collection="idSet" item="item" index="index" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </where>
+  </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from mall_shipping
     where id = #{id,jdbcType=INTEGER}

@@ -1,5 +1,7 @@
 package com.qiangssvip.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.qiangssvip.dao.OrderItemMapper;
 import com.qiangssvip.dao.OrderMapper;
 import com.qiangssvip.dao.ProductMapper;
@@ -121,19 +123,69 @@ public class IOrderServiceImpl implements IOrderService {
         return ResponseVo.successs(orderVo);
     }
 
+    @Override
+    public ResponseVo<PageInfo> list(Integer uid, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<Order> orderList = orderMapper.selectByUid(uid);
+
+        Set<Long> orderNoSet = orderList.stream()
+                .map(Order::getOrderNo)
+                .collect(Collectors.toSet());
+        List<OrderItem> orderItemList = orderItemMapper.selectByOrderNoSet(orderNoSet);
+        Map<Long, List<OrderItem>> orderItemMap = orderItemList.stream()
+                .collect(Collectors.groupingBy(OrderItem::getOrderNo));
+
+        Set<Integer> shippingIdSet = orderList.stream()
+                .map(Order::getShippingId)
+                .collect(Collectors.toSet());
+        List<Shipping> shippingList = shippingMapper.selectByIdSet(shippingIdSet);
+        Map<Integer, Shipping> shippingMap = shippingList.stream()
+                .collect(Collectors.toMap(Shipping::getId, shipping -> shipping));
+
+        List<OrderVo> orderVoList = new ArrayList<>();
+        for (Order order : orderList) {
+            OrderVo orderVo = buildOrderVo(order,
+                    orderItemMap.get(order.getOrderNo()),
+                    shippingMap.get(order.getShippingId()));
+            orderVoList.add(orderVo);
+        }
+        PageInfo pageInfo = new PageInfo<>(orderList);
+        pageInfo.setList(orderVoList);
+
+        return ResponseVo.successs(pageInfo);
+    }
+
+    @Override
+    public ResponseVo<OrderVo> detail(Integer uid, Long orderNo) {
+        Order order = orderMapper.selectByOrderNo(orderNo);
+        if (order == null || !order.getUserId().equals(uid)) {
+            return ResponseVo.error(ResponseEnum.ORDER_NOT_EXIST);
+        }
+        Set<Long> orderNoSet = new HashSet<>();
+        orderNoSet.add(order.getOrderNo());
+        List<OrderItem> orderItemList = orderItemMapper.selectByOrderNoSet(orderNoSet);
+
+        Shipping shipping = shippingMapper.selectByPrimaryKey(order.getShippingId());
+
+        OrderVo orderVo = buildOrderVo(order, orderItemList, shipping);
+        return ResponseVo.successs(orderVo);
+    }
+
     private OrderVo buildOrderVo(Order order, List<OrderItem> orderItemList, Shipping shipping) {
         OrderVo orderVo = new OrderVo();
-        BeanUtils.copyProperties(order,orderVo);
+        BeanUtils.copyProperties(order, orderVo);
 
-        List<OrderItemVo> orderItemVoList = orderItemList.stream().map(e -> {
+        List<OrderItemVo> OrderItemVoList = orderItemList.stream().map(e -> {
             OrderItemVo orderItemVo = new OrderItemVo();
             BeanUtils.copyProperties(e, orderItemVo);
             return orderItemVo;
         }).collect(Collectors.toList());
+        orderVo.setOrderItemVoList(OrderItemVoList);
 
-        orderVo.setOrderItemVoList(orderItemVoList);
-        orderVo.setShippingId(shipping.getId());
-        orderVo.setShippingVo(shipping);
+        if (shipping != null) {
+            orderVo.setShippingId(shipping.getId());
+            orderVo.setShippingVo(shipping);
+        }
 
         return orderVo;
     }

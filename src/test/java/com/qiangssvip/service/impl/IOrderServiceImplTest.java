@@ -1,5 +1,6 @@
 package com.qiangssvip.service.impl;
 
+import com.github.pagehelper.PageInfo;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.qiangssvip.service.IOrderService;
@@ -23,5 +24,18 @@ class IOrderServiceImplTest {
     void create() {
         ResponseVo<OrderVo> responseVo = orderService.create(12, 11);
         log.info("list = {}",gson.toJson(responseVo));
+    }
+
+    @Test
+    void list() {
+        ResponseVo<PageInfo> list = orderService.list(12, 1, 10);
+        log.info("list = {}",gson.toJson(list));
+    }
+
+    @Test
+    void detail() {
+        Long no = 1585191616943L;
+        ResponseVo<OrderVo> responseVo = orderService.detail(12, no);
+        log.info("detail = {}",gson.toJson(responseVo));
     }
 }
